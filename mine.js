@@ -42,7 +42,7 @@ function mine(miners) {
   const coinbaseTx = new Transaction([], [coinbaseUtxo]);
 
   block.addTransaction(coinbaseTx);
-
+  block.merkleRt = block.calcMerkleRt();
   block.execute();
 
   if (block.id === db.blockchain.blocks.length+1) {
@@ -50,13 +50,13 @@ function mine(miners) {
   } else mine();
 
   console.log(`
-  miner: ${address}
+  miner address: ${address}
+  --- block info ---
   mined block: #${block.id}
-  hash: ${block.previousHash}
+  previous hash: ${block.previousHash}
   nonce: ${block.nonce}
-  prevHash: ${block.hash()}\n`);
-
-  console.log(db.utxos);
+  hash: ${block.hash()}
+  merkle root: ${block.merkleRt}\n\n`);
 
   setTimeout(function () {
     mine(addresses);
